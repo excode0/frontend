@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  // Light/default theme
+  html {
+    --background-rgb: 242 248 255;
+    --backgroundSecond-rgb: 255 255 255;
+    --foreground-rgb: 245 202 61;
+    --text-rgb: 8 8 8;
+  }
+  // Dark theme
+  html[data-theme='dark'] {
+    --background-rgb: 26 29 33;
+    --backgroundSecond-rgb: 15 16 19;
+    --foreground-rgb: 245 202 61;
+    --text-rgb: 250 245 245;
+  }
+  // Solarized theme
+  html[data-theme='solarized'] {
+    --background-rgb: 26 29 33;
+    --backgroundSecond-rgb: 15 16 19;
+    --foreground-rgb: 26 26 26;
+    --text-rgb: 8 8 8;
+  }
+}
+.react-select-container {
+  background: rgb(var(--background-rgb));
+}
