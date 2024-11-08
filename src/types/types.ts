@@ -18,6 +18,12 @@ interface Materials {
   description: string;
   imageUrl: string;
 }
+interface StyleRoom {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+}
 
 interface Product {
   id: number;
@@ -58,4 +64,26 @@ interface Reviews {
   rating: number; // Nilai rating
   comment: string; // Isi komentar
   date: Date; // Tanggal ulasan
+}
+
+interface Rooms {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string[];
+  modelUrl: string;
+  videoUrl: string;
+  style: StyleRoom[];
+}
+interface RoomsProduct {
+  id: number;
+  rooms: number;
+  product: number[];
+}
+interface Customers{
+  id:number;
+  name: string;
+  email: string;
+  registrationDate: string;
+
 }

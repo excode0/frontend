@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import ProductForm from '../component/ProductForm';
+import ProductForm from './ProductForm';
 import PopupMessage from '@/components/PopupMessage';
 
 const page = () => {

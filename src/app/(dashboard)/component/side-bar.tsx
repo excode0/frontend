@@ -30,7 +30,7 @@ export default function Sidebar() {
           </h2>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className='text-gray-400 hover:text-white border-r-2 hover:border-gray-400 rounded-full'
+            className='text-gray-400 hover:text-foreground border-r-2 border-gray-400 hover:border-gray-200 rounded-full'
           >
             {isOpen ? (
               <HiMiniArrowLongLeft size={25} />
@@ -59,7 +59,7 @@ export default function Sidebar() {
             isOpen={isOpen}
           />
           <SidebarLink
-            href='/room'
+            href='/rooms'
             icon={<MdOutlineBedroomParent />}
             label='Rooms'
             isOpen={isOpen}
@@ -96,12 +96,18 @@ function SidebarLink({ href, icon, label, isOpen }: SidebarLinkProps) {
   return (
     <Link href={href}>
       <div
-        className={`flex items-center py-4 px-2  ${
+        className={`group flex items-center py-4 px-2  ${
           isActive ? 'bg-background border-l-2 border-foreground' : ''
         } hover:bg-background transition-colors`}
       >
-        <div className='text-lg'>{icon}</div>
-        {isOpen && <span className='ml-4'>{label}</span>}
+        <div
+          className={`text-lg ${
+            isActive ? 'text-foreground' : ''
+          } group-hover:text-foreground`}
+        >
+          {icon}
+        </div>
+        {isOpen && <span className='ml-4 '>{label}</span>}
       </div>
     </Link>
   );

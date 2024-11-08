@@ -67,7 +67,7 @@ const page = () => {
         const matchesSearch = product.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
+        return matchesCategory && matchesSearch && matchesMaterial;
       });
       setFilteredProduct(updatedProducts);
     };
@@ -84,7 +84,7 @@ const page = () => {
             <span>Export</span>
           </div>
           <Link
-            href={'/product/add-product'}
+            href={'/product/add'}
             className='flex gap-2 items-center bg-backgroundSecond px-4 py-2 text-text font-semibold rounded-md'
           >
             <IoIosAddCircle size={20} />

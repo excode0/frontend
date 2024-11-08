@@ -1,94 +1,47 @@
-'use client';
+import React, { useEffect, useState } from 'react';
+import Select, { MultiValue } from 'react-select';
 import { categories, ColorsData, materials } from '@/data/dataDummy';
-import clsx from 'clsx';
-import React, { useState } from 'react';
-import Select, { MultiValue, StylesConfig } from 'react-select';
+// Pastikan tipe 'Product' sudah sesuai di sini
 
 interface ProductFormProps {
+  initialData: Product;
   onSubmit: (data: Product) => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
-  const initialData: Product = {
-    id: 0,
-    name: '',
-    description: '',
-    category: [],
-    price: 0,
-    dimensions: {
-      width: 0,
-      height: 0,
-      depth: 0,
-    },
-    weight: 0,
-    material: [],
-    colors: [
-      {
-        name: '',
-        hex: '',
-        imageUrls: [],
-      },
-    ],
-    stockQuantity: 0,
-    isCustomizable: false,
-    manufacturer: '',
-    warranty: {
-      period: '',
-      coverage: '',
-    },
-    modelUrls: '',
-    videoUrls: '',
-    createdDate: new Date(),
-    updatedDate: new Date(),
-  };
-
+const ProductEditForm: React.FC<ProductFormProps> = ({
+  initialData,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState<Product>(initialData);
-  // Convert categories to options that can be used in react-select
-  const categoryOptions = categories.map((category) => ({
-    value: category.name,
-    label: category.name,
-  }));
+
+  useEffect(() => {
+    setFormData(initialData);
+  }, [initialData]);
 
   const handleCategoryChange = (
     selectedOptions: MultiValue<{ value: string; label: string }>,
   ) => {
     const selectedCategories = categories.filter((category) =>
-      selectedOptions.map((option) => option.value).includes(category.name),
+      selectedOptions.some((option) => option.value === category.name),
     );
-
-    setFormData((prevData) => ({
-      ...prevData,
-      category: selectedCategories,
-    }));
+    setFormData((prevData) => ({ ...prevData, category: selectedCategories }));
   };
-  // Convert materials to options that can be used in react-select
-  const materialOptions = materials.map((material) => ({
-    value: material.name,
-    label: material.name,
-  }));
 
   const handleMaterialChange = (
     selectedOptions: MultiValue<{ value: string; label: string }>,
   ) => {
     const selectedMaterials = materials.filter((material) =>
-      selectedOptions.map((option) => option.value).includes(material.name),
+      selectedOptions.some((option) => option.value === material.name),
     );
-
-    setFormData((prevData) => ({
-      ...prevData,
-      material: selectedMaterials,
-    }));
+    setFormData((prevData) => ({ ...prevData, material: selectedMaterials }));
   };
-  //   Color Option
-  const colorOptions = ColorsData.map((color) => ({
-    value: color.name,
-    label: color.name,
-    hex: color.hex,
-  }));
-  const handleColorChange = (selectedColors: any) => {
+
+  const handleColorChange = (
+    selectedColors: MultiValue<{ value: string; label: string; hex: string }>,
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
-      colors: selectedColors.map((color: any) => ({
+      colors: selectedColors.map((color) => ({
         name: color.label,
         hex: color.hex,
         imageUrls:
@@ -97,7 +50,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
     }));
   };
 
-  // Fungsi untuk menangani perubahan gambar
   const handleImageChange = (
     colorIndex: number,
     event: React.ChangeEvent<HTMLInputElement>,
@@ -113,14 +65,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
 
     setFormData((prevData) => {
-      // Jika nama field sesuai dengan salah satu property 'dimensions'
       if (['width', 'height', 'depth'].includes(name)) {
         return {
           ...prevData,
@@ -141,11 +90,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
         };
       }
 
-      // Jika nama field bukan 'dimensions', maka langsung update field lainnya
-      return {
-        ...prevData,
-        [name]: value,
-      };
+      return { ...prevData, [name]: value };
     });
   };
 
@@ -153,20 +98,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
     e.preventDefault();
     onSubmit(formData);
   };
-  const reset = () => {
-    setFormData(initialData);
-  };
+
   return (
     <form
       onSubmit={handleSubmit}
       className='w-full mx-auto bg-backgroundSecond p-6 shadow-lg rounded-md'
     >
-      <h2 className='text-2xl font-semibold mb-4 text-center'>
-        Add New Product
-      </h2>
-      {/* Name */}
+      <h2 className='text-2xl font-semibold mb-4 text-center'>Edit Product</h2>
+      {/* Nama Produk */}
       <div className='mb-4'>
-        <label className='block text-md font-medium mb-2' htmlFor='name'>
+        <label htmlFor='name' className='block text-md font-medium mb-2'>
           Name
         </label>
         <input
@@ -176,8 +117,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           value={formData.name}
           onChange={handleChange}
           required
-          className='w-full bg-backgroundSecond focus:bg-background p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200'
-          placeholder='Enter product name'
+          className='w-full bg-backgroundSecond focus:bg-background p-2 border border-gray-300 rounded'
         />
       </div>
       {/* Description */}
@@ -205,7 +145,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           unstyled
           isMulti
           name='category'
-          options={categoryOptions}
+          options={categories.map((category) => ({
+            value: category.name,
+            label: category.name,
+          }))}
           value={formData.category.map((c) => ({
             value: c.name,
             label: c.name,
@@ -301,7 +244,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           className='bg-backgroundSecond focus:bg-background p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200'
         />
       </div>
-
       {/* Choice Materials */}
       <div className='mb-4'>
         <label className='block text-md font-medium mb-2' htmlFor='category'>
@@ -312,7 +254,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           unstyled
           isMulti
           name='material'
-          options={materialOptions}
+          options={materials.map((item) => ({
+            value: item.name,
+            label: item.name,
+          }))}
           value={formData.material.map((c) => ({
             value: c.name,
             label: c.name,
@@ -342,7 +287,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           unstyled
           isMulti
           name='color'
-          options={colorOptions}
+          options={ColorsData.map((color) => ({
+            value: color.name,
+            label: color.name,
+            hex: color.hex,
+          }))}
           value={formData.colors.map((c) => ({
             value: c.name,
             label: c.name,
@@ -472,7 +421,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           name='modelUrls'
           type='file'
           multiple
-          value={formData.modelUrls}
+          // value={formData.modelUrls}
           onChange={handleChange}
           className='form-input-file'
         />
@@ -487,23 +436,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
           name='videoUrls'
           type='file'
           multiple
-          value={formData.videoUrls}
+          // value={formData.videoUrls}
           onChange={handleChange}
           className='form-input-file'
         />
       </div>
-
-      {/* Botton */}
-      <div className='flex justify-between'>
+      {/* Tombol Submit dan Reset */}
+      <div className='flex justify-between mt-4'>
         <button
-          onClick={reset}
-          className='px-4 py-2 text-md font-semibold text-red-600  rounded border-2 border-red-600'
+          type='button'
+          onClick={() => setFormData(initialData)}
+          className='px-4 py-2 text-md font-semibold text-red-600 rounded border-2 border-red-600'
         >
           Reset
         </button>
         <button
           type='submit'
-          className='px-4 py-2 text-md font-semibold text-text bg-blue-600 rounded hover:bg-blue-700 focus:outline-none'
+          className='px-4 py-2 text-md font-semibold text-text bg-blue-600 rounded hover:bg-blue-700'
         >
           Submit
         </button>
@@ -512,4 +461,4 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
   );
 };
 
-export default ProductForm;
+export default ProductEditForm;
